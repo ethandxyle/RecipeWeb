@@ -1,0 +1,19 @@
+#spring.application.name=RecipeWeb
+spring:
+  application:
+    name: recipeweb
+
+  datasource:
+    url: jdbc:postgresql://localhost:5438/recipeweb
+    driver-class-name: org.postgresql.Driver
+    username: recipe
+    password: web
+  flyway:
+    enabled: true
+    locations: classpath:db.migration
+  jpa:
+    generate-ddl: false
+    hibernate:
+      ddl-auto: none
+server:
+  port: 8080
