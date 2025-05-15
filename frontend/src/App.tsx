@@ -10,6 +10,11 @@ import SubmitRecipePage from './pages/SubmitRecipe';
 
 export default function App() {
     return (
+        <div className={"app-container"} style={
+            {height:"100vh",
+                width:"100%",
+                position:"fixed", top:"0", left:"0",
+                backgroundImage:`url('https://plus.unsplash.com/premium_photo-1674815329718-e1967af880f3?w=900&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NTN8fHdlYnNpdGUlMjBiYWNrZ3JvdW5kJTIwa2l0Y2hlbnxlbnwwfHwwfHx8MA%3D%3D')`,backgroundSize:"cover",}}  >
         <Router>
             <NavBar />
             <Routes>
@@ -20,5 +25,6 @@ export default function App() {
                 <Route path="/submit-recipe" element={<SubmitRecipePage />} />
             </Routes>
         </Router>
+        </div>
     );
 }

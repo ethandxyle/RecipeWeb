@@ -93,6 +93,13 @@ export default function RecipeForm({ onAdd }: RecipeFormProps) {
                     <MenuItem value="Medium">Medium</MenuItem>
                     <MenuItem value="Hard">Hard</MenuItem>
                 </TextField>
+                <TextField
+                    label="Image Link"
+                    name="image link"
+                    value={formData.description}
+                    onChange={handleChange}
+                    required
+                />
                 <Button variant="contained" type="submit">
                     Add Recipe
                 </Button>
