@@ -52,6 +52,8 @@ export default function RecipeForm({ onAdd }: RecipeFormProps) {
                     value={formData.title}
                     onChange={handleChange}
                     required
+                    sx={{
+                        backgroundColor: formData.title ? 'lightblue' : 'transparent' }}
                 />
                 <TextField
                     label="Description"
@@ -59,6 +61,8 @@ export default function RecipeForm({ onAdd }: RecipeFormProps) {
                     value={formData.description}
                     onChange={handleChange}
                     required
+                    sx={{
+                        backgroundColor: formData.description ? 'lightblue' : 'transparent' }}
                 />
                 <TextField
                     select
@@ -67,11 +71,14 @@ export default function RecipeForm({ onAdd }: RecipeFormProps) {
                     value={formData.category}
                     onChange={handleChange}
                     required
+                    sx={{
+                        backgroundColor: formData.category ? 'lightblue' : 'transparent' }}
                 >
                     <MenuItem value="Breakfast">Breakfast</MenuItem>
                     <MenuItem value="Lunch">Lunch</MenuItem>
                     <MenuItem value="Dinner">Dinner</MenuItem>
                     <MenuItem value="Dessert">Dessert</MenuItem>
+
                 </TextField>
                 <TextField
                     label="Cooking Time (minutes)"
@@ -80,6 +87,8 @@ export default function RecipeForm({ onAdd }: RecipeFormProps) {
                     value={formData.cookingTime}
                     onChange={handleChange}
                     required
+                    sx={{
+                        backgroundColor: formData.cookingTime ? 'lightblue' : 'transparent' }}
                 />
                 <TextField
                     select
@@ -88,19 +97,31 @@ export default function RecipeForm({ onAdd }: RecipeFormProps) {
                     value={formData.difficulty}
                     onChange={handleChange}
                     required
+                    sx={{
+                    backgroundColor: formData.cookingTime ? 'lightblue' : 'transparent' }}
                 >
                     <MenuItem value="Easy">Easy</MenuItem>
                     <MenuItem value="Medium">Medium</MenuItem>
                     <MenuItem value="Hard">Hard</MenuItem>
                 </TextField>
-                <TextField
-                    label="Image Link"
-                    name="image link"
-                    value={formData.description}
-                    onChange={handleChange}
-                    required
-                />
-                <Button variant="contained" type="submit">
+                {/*<TextField*/}
+                {/*    label="Image Link"*/}
+                {/*    name="image link"*/}
+                {/*    onChange={handleChange}*/}
+                {/*    required*/}
+                {/*    fullWidth*/}
+
+                {/*/>*/}
+                {/*<TextField*/}
+                {/*    label="Exact Ingredients:"*/}
+                {/*    name="description"*/}
+                {/*    onChange={handleChange}*/}
+                {/*    required*/}
+                {/*    fullWidth*/}
+
+                {/*/>*/}
+
+                <Button variant="contained" type="submit" onClick={handleSubmit}>
                     Add Recipe
                 </Button>
             </Stack>
