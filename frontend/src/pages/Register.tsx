@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import type { FormEvent } from 'react';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { Alert, TextField, Button, Typography, Stack, CircularProgress } from '@mui/material';
+import { Link as RouterLink, Navigate, useNavigate } from 'react-router-dom';
+import { Alert, TextField, Button, Typography, Stack, CircularProgress, Link, Box } from '@mui/material';
+import ArrowForwardRounded from '@mui/icons-material/ArrowForwardRounded';
 import { getApiError, registerUser } from '../api/api';
 import { useAuth } from '../Context/auth';
+import AuthLayout from '../components/AuthLayout';
 
 export default function RegisterPage() {
     const [username, setUsername] = useState('');
@@ -28,16 +30,23 @@ export default function RegisterPage() {
         }
     };
 
-    if (loading) return <CircularProgress aria-label="Checking session" />;
+    if (loading) return <Box sx={{ textAlign: 'center', py: 10 }}><CircularProgress aria-label="Checking session" /></Box>;
     if (user) return <Navigate to="/recipes" replace />;
 
     return (
-        <Stack component="form" spacing={2} onSubmit={handleRegister} sx={{ maxWidth: 480, mx: 'auto' }}>
-            <Typography variant="h4" component="h1">Register</Typography>
-            {error && <Alert severity="error">{error}</Alert>}
-            <TextField label="Username" value={username} required autoComplete="username" helperText="3–50 characters" slotProps={{ htmlInput: { minLength: 3, maxLength: 50 } }} onChange={event => setUsername(event.target.value)} />
-            <TextField label="Password" value={password} required autoComplete="new-password" type="password" helperText="6–72 characters (up to 72 bytes)" slotProps={{ htmlInput: { minLength: 6, maxLength: 72 } }} onChange={event => setPassword(event.target.value)} />
-            <Button variant="contained" type="submit" disabled={submitting}>{submitting ? 'Registering…' : 'Register'}</Button>
-        </Stack>
+        <AuthLayout eyebrow="PULL UP A CHAIR" title="Join the table." description="Create your account and add your own everyday favorites to the collection.">
+            <Stack component="form" spacing={2.5} onSubmit={handleRegister}>
+                {error && <Alert severity="error">{error}</Alert>}
+                <TextField label="Username" value={username} required autoComplete="username" fullWidth helperText="3–50 characters" slotProps={{ htmlInput: { minLength: 3, maxLength: 50 } }} onChange={event => setUsername(event.target.value)} />
+                <TextField label="Password" value={password} required autoComplete="new-password" type="password" fullWidth helperText="6–72 characters (up to 72 bytes)" slotProps={{ htmlInput: { minLength: 6, maxLength: 72 } }} onChange={event => setPassword(event.target.value)} />
+                <Button variant="contained" type="submit" size="large" disabled={submitting} endIcon={<ArrowForwardRounded sx={{ fontSize: 18 }} />}>
+                    {submitting ? 'Registering…' : 'Register'}
+                </Button>
+            </Stack>
+            <Typography sx={{ mt: 3.5, fontSize: '0.875rem', color: 'text.secondary', textAlign: 'center' }}>
+                Already have an account?{' '}
+                <Link component={RouterLink} to="/login" underline="hover" sx={{ fontWeight: 700 }}>Log in</Link>
+            </Typography>
+        </AuthLayout>
     );
 }
