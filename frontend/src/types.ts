@@ -6,10 +6,13 @@ export interface Recipe {
     category: string;
     cookingTime: number;
     difficulty: string;
+    ingredients?: string;
+    calories?: number;
+    protein?: number;
+    user?: User | null;
 }
 
 export interface User {
     id: number;
     username: string;
-    password: string;
 }

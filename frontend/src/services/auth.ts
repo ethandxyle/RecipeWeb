@@ -1,31 +1,17 @@
+import { loginUser as login, registerUser as register } from '../api/api';
+import type { User } from '../types';
+
 export interface AuthForm {
     username: string;
     password: string;
 }
 
-export interface AuthResponse {
-    id: number;
-    username: string;
-    // Add more fields if returned from backend
+export type AuthResponse = User;
+
+export async function registerUser(form: AuthForm): Promise<void> {
+    await register(form);
 }
 
-const API_BASE = 'http://localhost:8080/api/auth';
-
-export const registerUser = async (form: AuthForm): Promise<void> => {
-    const res = await fetch(`${API_BASE}/register`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-    });
-    if (!res.ok) throw new Error('Register failed');
-};
-
-export const loginUser = async (form: AuthForm): Promise<AuthResponse> => {
-    const res = await fetch(`${API_BASE}/login`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(form)
-    });
-    if (!res.ok) throw new Error('Login failed');
-    return res.json();
-};
+export async function loginUser(form: AuthForm): Promise<AuthResponse> {
+    return (await login(form)).data;
+}

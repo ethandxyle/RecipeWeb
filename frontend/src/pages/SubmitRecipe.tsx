@@ -1,24 +1,19 @@
-
-import { Container, Typography } from '@mui/material';
+import { CircularProgress, Stack, Typography } from '@mui/material';
+import { Navigate, useNavigate } from 'react-router-dom';
 import RecipeForm from '../components/RecipeForm';
-import { useNavigate } from 'react-router-dom';
-import type { Recipe } from '../types';
+import { useAuth } from '../Context/auth';
 
 export default function SubmitRecipePage() {
     const navigate = useNavigate();
+    const { user, loading } = useAuth();
 
-    // After adding recipe, navigate back to recipes page
-    const handleAdd = (_recipe: Recipe) => {
-        // Optionally show a toast or success message here before navigating
-        navigate('/recipes');
-    };
+    if (loading) return <CircularProgress aria-label="Checking session" />;
+    if (!user) return <Navigate to="/login" replace state={{ from: '/submit-recipe' }} />;
 
     return (
-        <Container sx={{ mt: 4 }}>
-            <Typography variant="h4" gutterBottom>
-                Submit a New Recipe
-            </Typography>
-            <RecipeForm onAdd={handleAdd} />
-        </Container>
+        <Stack spacing={3}>
+            <Typography variant="h4" component="h1">Submit a New Recipe</Typography>
+            <RecipeForm onAdd={() => navigate('/recipes')} />
+        </Stack>
     );
 }

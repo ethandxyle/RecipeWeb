@@ -1,26 +1,29 @@
 package org.example.recipeweb.controller;
 
+import jakarta.validation.Valid;
 import org.example.recipeweb.entity.Recipe;
 import org.example.recipeweb.service.RecipeService;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.net.URI;
+import java.security.Principal;
 import java.util.List;
 
 @RestController
 @RequestMapping("/api/recipes")
-@CrossOrigin(origins = "http://localhost:5174")  // Adjust for production frontend domain
 public class RecipeController {
+    private final RecipeService recipeService;
 
-    @Autowired
-    private RecipeService recipeService;
+    public RecipeController(RecipeService recipeService) {
+        this.recipeService = recipeService;
+    }
 
-    // Create recipe endpoint
     @PostMapping
-    public ResponseEntity<Recipe> createRecipe(@RequestBody Recipe recipe) {
-        Recipe savedRecipe = recipeService.saveRecipe(recipe);
-        return ResponseEntity.ok(savedRecipe);
+    public ResponseEntity<Recipe> createRecipe(@Valid @RequestBody Recipe recipe, Principal principal) {
+        Recipe savedRecipe = recipeService.saveRecipe(recipe, principal.getName());
+        return ResponseEntity.created(URI.create("/api/recipes/" + savedRecipe.getId())).body(savedRecipe);
     }
 
     @GetMapping
@@ -28,14 +31,19 @@ public class RecipeController {
         return recipeService.getAllRecipes();
     }
 
+    @GetMapping("/{id}")
+    public Recipe getRecipe(@PathVariable Long id) {
+        return recipeService.getRecipe(id);
+    }
+
     @PutMapping("/{id}")
-    public Recipe updateRecipe(@PathVariable Long id, @RequestBody Recipe recipe) {
-        return recipeService.updateRecipe(id, recipe);
+    public Recipe updateRecipe(@PathVariable Long id, @Valid @RequestBody Recipe recipe, Principal principal) {
+        return recipeService.updateRecipe(id, recipe, principal.getName());
     }
 
     @DeleteMapping("/{id}")
-    public void deleteRecipe(@PathVariable Long id) {
-        recipeService.deleteRecipe(id);
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteRecipe(@PathVariable Long id, Principal principal) {
+        recipeService.deleteRecipe(id, principal.getName());
     }
 }
-

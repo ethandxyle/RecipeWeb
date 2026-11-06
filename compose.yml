@@ -1,16 +1,21 @@
 
 services:
   postgres-db:
-    container_name: recipeweb
-    image: postgres # use latest official postgres version
-    restart: always
+    image: postgres:17
+    restart: unless-stopped
     environment:
       POSTGRES_USER: recipe
       POSTGRES_PASSWORD: web
       POSTGRES_DB: recipeweb
-      POSTGRES_HOST_AUTH_METHOD: password
     ports:
       - "5438:5432"
+    volumes:
+      - postgresql_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U recipe -d recipeweb"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
 volumes:
   postgresql_data:

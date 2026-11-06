@@ -3,23 +3,27 @@ package org.example.recipeweb.service;
 import org.example.recipeweb.entity.Recipe;
 import org.example.recipeweb.entity.User;
 import org.example.recipeweb.repository.RecipeRepo;
-import org.example.recipeweb.repository.UserRepo;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
 @Service
 public class RecipeService {
+    private final RecipeRepo recipeRepository;
+    private final UserService userService;
 
-    @Autowired
-    private RecipeRepo recipeRepository;
+    public RecipeService(RecipeRepo recipeRepository, UserService userService) {
+        this.recipeRepository = recipeRepository;
+        this.userService = userService;
+    }
 
-    @Autowired
-    private UserRepo userRepository;
-
-    // Save new recipe (no user association in this example)
-    public Recipe saveRecipe(Recipe recipe) {
+    @Transactional
+    public Recipe saveRecipe(Recipe recipe, String username) {
+        recipe.setId(null);
+        recipe.setUser(userService.findByUsername(username));
         return recipeRepository.save(recipe);
     }
 
@@ -27,9 +31,15 @@ public class RecipeService {
         return recipeRepository.findAll();
     }
 
-    public Recipe updateRecipe(Long id, Recipe updatedRecipe) {
-        Recipe recipe = recipeRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Recipe not found"));
+    public Recipe getRecipe(Long id) {
+        return recipeRepository.findById(id)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Recipe not found"));
+    }
+
+    @Transactional
+    public Recipe updateRecipe(Long id, Recipe updatedRecipe, String username) {
+        Recipe recipe = getRecipe(id);
+        checkOwner(recipe, username);
 
         recipe.setTitle(updatedRecipe.getTitle());
         recipe.setDescription(updatedRecipe.getDescription());
@@ -39,11 +49,20 @@ public class RecipeService {
         recipe.setCalories(updatedRecipe.getCalories());
         recipe.setProtein(updatedRecipe.getProtein());
         recipe.setCookingTime(updatedRecipe.getCookingTime());
-
         return recipeRepository.save(recipe);
     }
 
-    public void deleteRecipe(Long id) {
-        recipeRepository.deleteById(id);
+    @Transactional
+    public void deleteRecipe(Long id, String username) {
+        Recipe recipe = getRecipe(id);
+        checkOwner(recipe, username);
+        recipeRepository.delete(recipe);
+    }
+
+    private void checkOwner(Recipe recipe, String username) {
+        User user = userService.findByUsername(username);
+        if (recipe.getUser() == null || !recipe.getUser().getId().equals(user.getId())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "You can only change your own recipes");
+        }
     }
 }

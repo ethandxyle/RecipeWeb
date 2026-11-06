@@ -1,10 +1,7 @@
-import React, { createContext, useState, useMemo, useContext } from 'react';
+import React, { useState, useMemo } from 'react';
 import { ThemeProvider } from '@mui/material/styles';
 import { lightTheme, darkTheme } from '../theme';
-
-const ThemeToggleContext = createContext({ toggleTheme: () => {} });
-
-export const useThemeToggle = () => useContext(ThemeToggleContext);
+import { ThemeToggleContext } from './useThemeToggle';
 
 export const CustomThemeProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const [mode, setMode] = useState<'light' | 'dark'>('light');

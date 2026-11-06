@@ -1,6 +1,10 @@
 package org.example.recipeweb.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
+import jakarta.validation.constraints.Size;
 
 @Entity
 public class Recipe {
@@ -9,21 +13,38 @@ public class Recipe {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @NotBlank(message = "Title is required")
+    @Size(max = 200, message = "Title must be at most 200 characters")
+    @Column(nullable = false, length = 200)
     private String title;
 
+    @NotBlank(message = "Description is required")
+    @Size(max = 10000, message = "Description must be at most 10000 characters")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String description;
 
+    @NotBlank(message = "Difficulty is required")
+    @Size(max = 50)
+    @Column(nullable = false, length = 50)
     private String difficulty; // e.g., Easy, Medium, Hard
 
+    @NotBlank(message = "Category is required")
+    @Size(max = 50)
+    @Column(nullable = false, length = 50)
     private String category;   // e.g., Breakfast, Lunch, Dessert
 
-    @Column(columnDefinition = "TEXT")
+    @NotBlank(message = "Ingredients are required")
+    @Size(max = 10000, message = "Ingredients must be at most 10000 characters")
+    @Column(columnDefinition = "TEXT", nullable = false)
     private String ingredients; // large text
 
+    @PositiveOrZero(message = "Calories cannot be negative")
     private int calories;
 
+    @PositiveOrZero(message = "Protein cannot be negative")
     private int protein;
 
+    @Positive(message = "Cooking time must be greater than zero")
     private int cookingTime;   // in minutes
 
     @ManyToOne
